@@ -48,5 +48,13 @@ def update_by_id(task_id):
 # PATCH ONE TASK
 
 # DELETE ONE TASK
+@bp.delete("/<task_id")
+def delete_by_id(task_id):
+    task = retrieve_model_inst_by_id(Task, task_id)
+
+    db.session.delete(task)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
 
 # DELETE ALL TASKS
