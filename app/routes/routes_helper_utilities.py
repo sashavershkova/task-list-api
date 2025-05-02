@@ -21,5 +21,5 @@ def create_model_inst_from_dict_with_response(cls, inst_data):
     new_instance = cls.from_dict(inst_data)
     db.session.add(new_instance)
     db.session.commit()
-    response = new_instance.to_dict()
+    response = {"task": new_instance.to_dict()}
     return response, 201
