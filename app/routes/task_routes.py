@@ -5,11 +5,13 @@ from app.db import db
 
 bp = Blueprint("task_bp", __name__, url_prefix="/tasks")
 
+
 # CREATE ONE TASK
 @bp.post("")
 def create_task():
     request_body = request.get_json()
     return create_model_inst_from_dict_with_response(Task, request_body)
+
 
 # READ ALL TASKS
 @bp.get("")
@@ -23,12 +25,14 @@ def get_all_tasks():
     
     return response
 
+
 # READ ONE TASK BY ID
 @bp.get("/<task_id>")
 def get_task_by_id(task_id):
     task = retrieve_model_inst_by_id(Task, task_id)
 
     return task.to_dict()
+
 
 # UPDATE ONE TASK
 @bp.update("/<task_id>")
@@ -47,6 +51,24 @@ def update_by_id(task_id):
 
 
 # PATCH ONE TASK
+@bp.patch("/<task_id>")
+def patch_by_id(task_id):
+    task = retrieve_model_inst_by_id(Task, task_id)
+    request_body = request.get_json()
+
+    if "title" in request_body:
+        task.title = request_body["title"]
+    if "description" in request_body:
+        task.description = request_body["description"]      
+    if "completed_at" in request_body:
+        task.completed_at = request_body["completed_at"]
+    
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+
 
 # DELETE ONE TASK
 @bp.delete("/<task_id")
@@ -57,6 +79,7 @@ def delete_by_id(task_id):
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
+
 
 # DELETE ALL TASKS
 @bp.delete("")
