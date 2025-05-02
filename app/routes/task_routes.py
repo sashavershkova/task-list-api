@@ -30,6 +30,20 @@ def get_task_by_id(task_id):
     return task.to_dict()
 
 # UPDATE ONE TASK
+@bp.update("/<task_id>")
+def update_by_id(task_id):
+    task = retrieve_model_inst_by_id(Task, task_id)
+    request_body = request.get_json()
+
+
+    task.title = request_body["title"]
+    task.description = request_body["description"]
+    task.completed_at = request_body["completed_at"]
+
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
 
 # PATCH ONE TASK
 
