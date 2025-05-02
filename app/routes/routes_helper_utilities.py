@@ -1,7 +1,7 @@
 from flask import abort, make_response
 from app.db import db
 
-def retrieve_model_instance_by_id(cls, model_id):
+def retrieve_model_inst_by_id(cls, model_id):
     try:
         model_id = int(model_id)
     except:
@@ -16,3 +16,10 @@ def retrieve_model_instance_by_id(cls, model_id):
         abort(make_response(response_message, 404))
 
     return model
+
+def create_model_inst_from_dict_with_response(cls, inst_data):
+    new_instance = cls.from_dict(inst_data)
+    db.session.add(new_instance)
+    db.session.commit()
+    response = new_instance.to_dict()
+    return response, 201
