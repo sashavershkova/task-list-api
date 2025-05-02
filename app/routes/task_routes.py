@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from app.routes.routes_helper_utilities import create_model_inst_from_dict_with_response, retrieve_model_inst_by_id
 from app.models.task import Task
+from app.db import db
 
 bp = Blueprint("task_bp", __name__, url_prefix="/tasks")
 
@@ -58,3 +59,9 @@ def delete_by_id(task_id):
     return Response(status=204, mimetype="application/json")
 
 # DELETE ALL TASKS
+@bp.delete("")
+def delete_all_tasks():
+    db.session.query(Task).delete()
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
