@@ -1,5 +1,6 @@
 from flask import Blueprint, request, Response, make_response, abort
 from sqlalchemy import desc
+from datetime import datetime, timezone
 from app.routes.routes_helper_utilities import create_model_inst_from_dict_with_response, retrieve_model_inst_by_id
 from app.models.task import Task
 from app.db import db
@@ -70,6 +71,28 @@ def patch_by_id(task_id):
     if "completed_at" in request_body:
         task.completed_at = request_body["completed_at"]
     
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+# PATCH ONE TASK MARK IT AS COMPLETE
+@bp.patch("/<task_id>/mark_complete")
+def patch_by_id_mark_complete(task_id):
+    task = retrieve_model_inst_by_id(Task, task_id)
+
+    task.completed_at = datetime.now(timezone.utc)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+# PATCH ONE TASK MARK IT AS INCOMPLETE
+@bp.patch("/<task_id>/mark_incomplete")
+def patch_by_id_mark_incomplete(task_id):
+    task = retrieve_model_inst_by_id(Task, task_id)
+
+    task.completed_at = None
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
