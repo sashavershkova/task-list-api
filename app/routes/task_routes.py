@@ -1,4 +1,5 @@
 from flask import Blueprint, request, Response, make_response, abort
+from sqlalchemy import desc
 from app.routes.routes_helper_utilities import create_model_inst_from_dict_with_response, retrieve_model_inst_by_id
 from app.models.task import Task
 from app.db import db
@@ -16,7 +17,15 @@ def create_task():
 # READ ALL TASKS
 @bp.get("")
 def get_all_tasks():
-    query = db.select(Task).order_by(Task.id)
+    query = db.select(Task)
+
+    sort_param = request.args.get("sort")
+    if sort_param=="desc":
+        query = query.order_by(desc(Task.title))
+    else:
+        query = query.order_by(Task.title)
+
+    query = query.order_by(Task.id)
     tasks = db.session.scalars(query)
     
     response = []
