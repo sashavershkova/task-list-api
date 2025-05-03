@@ -18,7 +18,12 @@ def retrieve_model_inst_by_id(cls, model_id):
     return model
 
 def create_model_inst_from_dict_with_response(cls, inst_data):
-    new_instance = cls.from_dict(inst_data)
+    try:
+        new_instance = cls.from_dict(inst_data)
+    except KeyError as error:
+        response = {"details": "Invalid data"}
+        abort(make_response(response, 400))
+
     db.session.add(new_instance)
     db.session.commit()
     response = {"task": new_instance.to_dict()}

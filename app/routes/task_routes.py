@@ -10,11 +10,6 @@ bp = Blueprint("task_bp", __name__, url_prefix="/tasks")
 @bp.post("")
 def create_task():
     request_body = request.get_json()
-
-    if "title" not in request_body or "description" not in request_body:
-        response_message = {"details": "Invalid data"}
-        abort(make_response(response_message, 400))
-    
     return create_model_inst_from_dict_with_response(Task, request_body)
 
 
