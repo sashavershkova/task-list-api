@@ -25,5 +25,21 @@ def get_one_goal(goal_id):
     goal = retrieve_model_inst_by_id(Goal, goal_id)
     return nested_dict(Goal, goal)
 
+@bp.put("/<goal_id>")
+def update_one_goal(goal_id):
+    goal = retrieve_model_inst_by_id(Goal, goal_id)
+    request_body = request.get_json()
+
+    goal.title = request_body["title"]
+    db.session.commit()
+    return Response(status=204, mimetype="application/json")
+
+@bp.delete("/<goal_id>")
+def delete_one_goal(goal_id):
+    goal = retrieve_model_inst_by_id(Goal, goal_id)
+    db.session.delete(goal)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
 
 
