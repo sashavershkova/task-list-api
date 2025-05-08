@@ -6,6 +6,7 @@ from app.routes.routes_helper_utilities import create_model_inst_from_dict_with_
 from app.models.task import Task
 from app.db import db
 import os
+
 slack_token = os.environ.get("SLACKBOT_TOKEN")
 
 bp = Blueprint("task_bp", __name__, url_prefix="/tasks")

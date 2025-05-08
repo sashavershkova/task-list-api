@@ -11,5 +11,6 @@ class Goal(db.Model):
             title=self.title
         )
     
+    @classmethod
     def from_dict(cls, goal_data):
         return cls(title=goal_data["title"])
