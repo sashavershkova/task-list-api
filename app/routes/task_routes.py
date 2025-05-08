@@ -1,9 +1,12 @@
 from flask import Blueprint, request, Response, make_response, abort
 from sqlalchemy import desc
 from datetime import datetime, timezone
+import requests
 from app.routes.routes_helper_utilities import create_model_inst_from_dict_with_response, retrieve_model_inst_by_id
 from app.models.task import Task
 from app.db import db
+import os
+slack_token = os.environ.get("SLACKBOT_TOKEN")
 
 bp = Blueprint("task_bp", __name__, url_prefix="/tasks")
 
@@ -83,6 +86,15 @@ def patch_by_id_mark_complete(task_id):
 
     task.completed_at = datetime.now(timezone.utc)
     db.session.commit()
+    
+    # send notification to Slack
+    headers = {"Authorization": f"Bearer {slack_token}"}
+    data = {
+        "channel": "C08NTC26TM1",
+        "text": f"Someone just completed the task -- {task.title}: {task.description}"
+    }
+
+    requests.post("https://slack.com/api/chat.postMessage", headers=headers, data=data)
 
     return Response(status=204, mimetype="application/json")
 
