@@ -21,13 +21,13 @@ def add_task_ids_to_goal(goal_id):
     goal = retrieve_model_inst_by_id(Goal, goal_id)
     request_body = request.get_json()
 
-    # remove existing task from that goal
+    # remove connection of existing task from that goal
     query = db.select(Task).where(Task.goal_id==1)
     old_tasks = db.session.scalars(query)
     for task in old_tasks:
         task.goal_id = None
 
-    # add tasks to the goal
+    # add connections of new tasks to the goal
     for task_id in request_body["task_ids"]:
         task = retrieve_model_inst_by_id(Task, task_id)
         task.goal_id = goal_id    
